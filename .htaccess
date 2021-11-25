@@ -1,0 +1,13 @@
+DirectoryIndex system/system_page.php
+
+RewriteEngine on
+
+# obtain url filename
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# obtain filename
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# NC - no capitalization, L - kinda like a semicolon
+# ^(.*)$ - if it matches any file except server root
+RewriteRule ^(.*)$ system/system_page.php?page=$1 [NC,QSA,L]
