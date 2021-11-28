@@ -6,12 +6,13 @@ class config {
 
 	function __construct() {
 		$this->page_limit = 15;
-		$this->notif_timeout = 5000;
+		$this->notif_timeout = 10000;
 
 		$this->base_url = "http://". $_SERVER["SERVER_NAME"] . "/hermes_chat/";
 		$this->index = "login";
 		$this->routes = array(
 			"login" => "main/view_login",
+			"registration" => "main/view_registration",
 
 			"conversations" => "main/view_conversations",
 
@@ -19,6 +20,8 @@ class config {
 
 			// FUNCTIONS
 			"login_v" => "login/verify_login",
+			"account_register" => "add/add_account",
+			"account_update" => "edit/edit_account",
 			"logout" => "main/logout",
 		);
 	}

@@ -75,13 +75,20 @@ $this->view("template/notifications");
 <?php $this->view("windows/account_menu"); ?>
 <script type="text/javascript" src="<?=$this->cfg->base_url()?>assets/js/script.js"></script>
 <script type="text/javascript">
-	
+
 	document.querySelector("#account_menu").onclick = function() {
 		document.querySelector("#win_account_menu").style.display = "block";
 	};
 	document.querySelector("#win_account_menu").onclick = function(e) {
 		if (e.target === this) {
 			document.querySelector("#win_account_menu").style.display = "none";
+		}
+	};
+	document.querySelector(".btn_account_update").onclick = function(e) {
+		if (document.querySelector("#account_update_div").style.display == "none") {
+			document.querySelector("#account_update_div").style.display = "block";
+		} else {
+			document.querySelector("#account_update_div").style.display = "none";
 		}
 	};
 </script>

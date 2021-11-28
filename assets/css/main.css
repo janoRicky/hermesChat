@@ -52,9 +52,11 @@
 	overflow: auto;
 }
 .notif {
-	background-color: #72ff6e;
-	border: #ffffff solid 2px;
-	border-radius: 15px;
+	background-color: #fbf3ce;
+	border-color: #e7dba1;
+	border-radius: 2px;
+	border-width: 0.2rem;
+	border-style: solid;
 	margin: auto;
 	margin-top: 3rem;
 	margin-bottom: 2rem;
@@ -80,13 +82,13 @@
 	overflow: auto;
 }
 .window {
-	background-color: #ffffff;
+	background-color: #fbf3ce;
 	border-color: #e7dba1;
 	border-radius: 2px;
 	border-width: 0.2rem;
 	border-style: solid;
 	margin: auto;
-	margin-top: 2rem;
+	margin-top: 3rem;
 	margin-bottom: 2rem;
 	z-index: 101;
 }
@@ -99,17 +101,53 @@
 .window.win_lg {
 	width: 60%;
 }
-.window .win_head {
+/*.window .win_head {
 	border-bottom: 1px solid #69ff00;
 	padding: 1rem;
 	font-weight: bold;
 	font-size: 1.5rem;
-}
+}*/
 .window .win_body {
 	background-color: #fbf3ce;
 	padding: 1rem;
+
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
 }
-.window .win_foot {
+.window_img {
+	background-image: url("../img/greek_circle.png");
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+
+	width: 12rem;
+	height: 12rem;
+	margin: auto;
+}
+.window_img div {
+	width: 7.5rem;
+	height: 7.5rem;
+
+	margin: 2.25rem;
+
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+
+	border-radius: 5rem;
+}
+.window_label {
+	font-weight: bold;
+}
+.window_button {
+	color: #000;
+	border-color: #000;
+}
+.window_button div {
+	border-color: #000;
+}
+/*.window .win_foot {
 	border-top: 1px solid #69ff00;
 	padding: 1rem;
 	text-align: right;
@@ -118,7 +156,7 @@
 	font-size: 1.2rem;
 	float: right;
 	cursor: pointer;
-}
+}*/
 /* FORM */
 .form {
 	padding: 0;
@@ -163,8 +201,8 @@
 	color: #fbf3ce;
 	font-weight: bold;
 }
-.login_content {
-	/*margin: 5rem;*/
+.login_links:hover {
+	text-decoration: underline;
 }
 
 /* MAIN */
@@ -264,7 +302,6 @@ body {
 }
 a {
 	text-decoration: none;
-	color: black;
 }
 button {
 	background-color: rgba(0,0,0,0);
@@ -349,6 +386,9 @@ button {
 }
 .h_100 {
 	height: 100%;
+}
+.m_auto {
+	margin: auto !important;
 }
 .m_1 {
 	margin: 1rem !important;

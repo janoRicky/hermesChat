@@ -7,6 +7,9 @@ class model_read extends core_model {
 	function user_verify($email) {
 		return $this->select("users", array("email" => $email));
 	}
+	function get_user_by_id($id) {
+		return $this->select("users", array("ID" => $id));
+	}
 	
 	// function item_count() {
 	// 	return $this->get_rows("p_items");

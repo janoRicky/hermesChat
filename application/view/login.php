@@ -31,6 +31,11 @@ $this->view("template/notifications");
 								<div>LOGIN</div>
 							</button>
 						</form>
+						<div class="row mt_1">
+							<div class="row_12 text_center login_links">
+								<a href="registration" style="color: #fbf3ce !important;">No account? Click here to register</a>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div class="row greek_pattern_alt mt_1 mb_1" style="height: 3rem;"></div>

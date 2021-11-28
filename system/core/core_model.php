@@ -8,7 +8,7 @@ class core_model extends db {
 		$conn = new mysqli($this->server(), $this->username(), $this->password(), $this->name());
 
 		if ($conn->connect_error) {
-		    return false;
+			return false;
 		} else {
 			return $conn;
 		}
@@ -227,6 +227,46 @@ class core_model extends db {
 			$conn->close();
 		}
 		return $result;
+	}
+
+	function image_upload($ul_config) {
+		$path_location = "../". $ul_config["path"];
+		$image_type = strtolower(pathinfo(basename($path_location ."/". $ul_config["file"]["name"]), PATHINFO_EXTENSION));
+		$path_full = $path_location ."/". $ul_config["file_name"] .".". $image_type;
+
+
+		if (!is_dir($path_location)) {
+			mkdir($path_location, 0777, true);
+		}
+
+		if(getimagesize($ul_config["file"]["tmp_name"]) == false) {
+			return false;
+		}
+
+		if (file_exists($path_full)) {
+			unlink($path_full);
+		}
+
+		if ($ul_config["file"]["size"] > 5000000) {
+			return false;
+		}
+
+		$allowed_type = false;
+		foreach (explode("|", $ul_config["types"]) as $type) {
+			if ($image_type == $type) {
+				$allowed_type = true;
+				break;
+			}
+		}
+		if (!$allowed_type) {
+			return false;
+		}
+
+		if (move_uploaded_file($ul_config["file"]["tmp_name"], $path_full)) {
+			return substr($path_full, 3);
+		} else {
+			return false;
+		}
 	}
 }
 

@@ -11,6 +11,11 @@ class controller_main extends core_controller {
 		date_default_timezone_set("Asia/Manila");
 	}
 
+	function login_check() {
+		if (!isset($_SESSION["user_in"]) || $_SESSION["user_in"] != TRUE) {
+			$this->logout();
+		}
+	}
 	function logout() {
 		session_destroy();
 		header("Location: login");
@@ -42,12 +47,24 @@ class controller_main extends core_controller {
 
 		$this->load->view("login", $data);
 	}
+	function view_registration() {
+		if (isset($_SESSION["user_in"])) {
+			header("Location: conversations");
+		}
+
+		$data["head_title"] = "Hermes Chat - Registration";
+
+		$this->load->view("registration", $data);
+	}
+
 	function view_conversations() {
+		$this->login_check();
 		$data["head_title"] = "Conversations - Hermes Chat";
 		
 		$this->load->view("conversations", $data);
 	}
 	function view_messaging() {
+		$this->login_check();
 		$data["head_title"] = "Messaging - Hermes Chat";
 		
 		$this->load->view("messaging", $data);

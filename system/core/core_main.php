@@ -25,12 +25,7 @@ class core_main {
 		if ($rt == "index") {
 			$func_name = $this->cfg->routes()[$rt];
 			$this->main->$func_name();
-		} elseif ($rt == "login") {
-			$this->main->view_login();
-		} elseif ($rt == "login_v") {
-			$this->login->verify_login();
 		} else {
-			if (isset($_SESSION["user_in"]) && $_SESSION["user_in"] == TRUE) {
 				if (!array_key_exists($rt, $this->cfg->routes())) {
 					header("Location: 404.html");
 				} else {
@@ -39,9 +34,6 @@ class core_main {
 					$func = $route[1];
 					$this->$ctrl->$func();
 				}
-			} else {
-				$this->move("login");
-			}
 		}
 	}
 }

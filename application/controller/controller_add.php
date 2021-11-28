@@ -6,36 +6,42 @@ class controller_add extends core_controller {
 
 	function __construct() {
 		$this->load = new core_loader();
+		$this->model("read");
 		$this->model("create");
+		$this->model("upload");
 	}
 
 	function add_account() {
-		// $name = $this->post("inp_name");
-		// $email = $this->post("inp_email");
-		// $password = $this->post("inp_password");
-		$name = "tester";
-		$email = "test@email.com";
-		$password = "1234";
+		$name = $this->post("inp_name");
+		$email = $this->post("inp_email");
+		$password = $this->post("inp_password");
 
 		if ($name != NULL && $email != NULL && $password != NULL) {
-			if (strlen($name) <= 64 || strlen($email) <= 64 || strlen($password) <= 64) {
-				$data = array(
-					"name" => $name,
-					"email" => $email,
-					"password" => password_hash($password, PASSWORD_DEFAULT)
-				);
-				if ($this->create->user_add($data)) {
-					$_SESSION["alert"] = "Successfully added Account.";
+			$email_check = $this->read->user_verify($email);
+
+			if ($email_check->num_rows < 1) {
+				if (strlen($name) <= 64 || strlen($email) <= 64 || strlen($password) <= 64) {
+					$data = array(
+						"name" => $name,
+						"email" => $email,
+						"password" => password_hash($password, PASSWORD_DEFAULT),
+						"profile_img" => $this->upload->ul_image_user($_FILES["inp_image"])
+					);
+					if ($this->create->user_add($data)) {
+						$_SESSION["alert"] = "Successfully registered Account.";
+					} else {
+						$_SESSION["alert"] = "Something went wrong. Please try again later.";
+					}
 				} else {
-					$_SESSION["alert"] = "Something went wrong. Please try again later.";
+					$_SESSION["alert"] = "Input cannot be longer than 64 characters.";
 				}
 			} else {
-				$_SESSION["alert"] = "Input cannot be longer than 64 characters.";
+				$_SESSION["alert"] = "Email already in use.";
 			}
 		} else {
 			$_SESSION["alert"] = "All inputs must be filled.";
 		}
-		header("Location: accounts");
+		header("Location: registration");
 		exit();
 	}
 }
