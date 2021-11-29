@@ -17,7 +17,7 @@ class controller_add extends core_controller {
 		$password = $this->post("inp_password");
 
 		if ($name != NULL && $email != NULL && $password != NULL) {
-			$email_check = $this->read->user_verify($email);
+			$email_check = $this->read->get_user_by_email($email);
 
 			if ($email_check->num_rows < 1) {
 				if (strlen($name) <= 64 || strlen($email) <= 64 || strlen($password) <= 64) {
@@ -29,6 +29,8 @@ class controller_add extends core_controller {
 					);
 					if ($this->create->user_add($data)) {
 						$_SESSION["alert"] = "Successfully registered Account.";
+						header("Location: login");
+						exit();
 					} else {
 						$_SESSION["alert"] = "Something went wrong. Please try again later.";
 					}
@@ -42,6 +44,39 @@ class controller_add extends core_controller {
 			$_SESSION["alert"] = "All inputs must be filled.";
 		}
 		header("Location: registration");
+		exit();
+	}
+
+	function add_message() {
+		$receiver_id = $this->post("inp_receiver_id");
+		$message = $this->post("inp_message");
+		$date = date("Y-m-d h:i:s");
+
+		if (isset($_SESSION["user_id"])) {
+			$from_id = $this->read->get_user_by_user_id($_SESSION["user_id"])->fetch_array()["ID"];
+			$to_id = $this->read->get_user_by_user_id($receiver_id)->fetch_array()["ID"];
+
+			if ($from_id != NULL && $to_id != NULL && $message != NULL) {
+				if (strlen($message) < 767) {
+					$data = array(
+						"from_id" => $from_id,
+						"to_id" => $to_id,
+						"message" => $message,
+						"date_time" => date("Y-m-d H:i:s")
+					);
+					if (!$this->create->message_add($data)) {
+						$_SESSION["alert"] = "Something went wrong. Please try again later.";
+					}
+				} else {
+					$_SESSION["alert"] = "Message is too long (< 767).";
+				}
+			} else {
+				$_SESSION["alert"] = "All inputs must be filled.";
+			}
+		} else {
+			$_SESSION["alert"] = "Something went wrong. Please try again later.";
+		}
+		header("Location: messaging?cm=". $receiver_id);
 		exit();
 	}
 }

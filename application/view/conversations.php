@@ -20,52 +20,48 @@ $this->view("template/notifications");
 				</div>
 			</div>
 			<div class="row greek_pattern" style="height: 2rem;"></div>
+			<div class="row pt_1 pb_1">
+				<form action="messaging" method="GET" class="m_auto">
+					<div class="row">
+						<div class="row_8">
+							<input class="textbox" type="text" name="cm" placeholder="ENTER USER ID HERE">
+						</div>
+						<div class="row_4">
+							<button class="button window_button">
+								<div>CONVERSE</div>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
 			<div class="row">
 				<div class="row_1"></div>
 				<div class="row_10">
-					<a class="row" href="messaging">
-						<div class="row_2">
-							<img src="<?=$this->cfg->base_url()?>assets/img/greek_circle.png" style="width:100%;">
-						</div>
-						<div class="row_8">
-							
-						</div>
-						<div class="row_2">
-							<img src="<?=$this->cfg->base_url()?>assets/img/greek_fire.gif" style="height: 7rem;">
-						</div>
-					</a>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					t<br>
-					t<br>
-					t<br>
-					t<br>
-					t<br>
-					t<br>
-					t<br>
-					t<br>
-					t<br>
-					t<br>
-					t<br>
-					t<br>
-					t<br>
+					<?php if (sizeof($conversations) > 0): ?>
+						<?php foreach ($conversations as $row): ?>
+							<a class="row" href="messaging?cm=<?=$row['converser_user_id']?>">
+								<div class="row_2">
+									<div class="row">
+										<div class="u_img messaging_img">
+											<div style="background-image: url('<?=$this->cfg->base_url() . ($row["converser_img"] != "" ? $row["converser_img"] : "assets/img/arrow.png")?>');"></div>
+										</div>
+									</div>
+								</div>
+								<div class="row_8">
+									<h4><?=$row["converser_name"]?></h4>
+									Last Chat: 
+									<?php if ($logged_in_id == $row["from_id"]): ?>
+										ME
+									<?php else: ?>
+										THEM
+									<?php endif; ?>
+								</div>
+								<!-- <div class="row_2">
+									<img src="<?=$this->cfg->base_url()?>assets/img/greek_fire.gif" style="height: 7rem;">
+								</div> -->
+							</a>
+						<?php endforeach; ?>
+					<?php endif; ?>
 				</div>
 				<div class="row_1"></div>
 			</div>

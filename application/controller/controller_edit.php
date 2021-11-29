@@ -13,13 +13,13 @@ class controller_edit extends core_controller {
 	
 	function edit_account() {
 		if (isset($_SESSION["user_id"])) {
-			$id = $_SESSION["user_id"];
+			$id = $this->read->get_user_by_user_id($_SESSION["user_id"])->fetch_array()["ID"];
 			$name = $this->post("inp_name");
 			$email = $this->post("inp_email");
 			$password = $this->post("inp_password");
 
 			if ($id != NULL && $name != NULL && $email != NULL) {
-				$email_check = $this->read->user_verify($email);
+				$email_check = $this->read->get_user_by_email($email);
 				if ($email_check->num_rows < 1 || $email == $_SESSION["user_email"]) {
 					if (strlen($name) <= 60 || strlen($email) <= 60) {
 						$data = array(

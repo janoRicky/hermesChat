@@ -4,11 +4,23 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/hermes_chat/system/core/core_model.ph
 
 class model_read extends core_model {
 
-	function user_verify($email) {
+	function get_user_by_email($email) {
 		return $this->select("users", array("email" => $email));
 	}
 	function get_user_by_id($id) {
 		return $this->select("users", array("ID" => $id));
+	}
+	function get_user_by_user_id($id) {
+		return $this->select("users", array("user_id" => $id));
+	}
+
+	function get_messages($id_from, $id_to) {
+		return $this->select("messages", array("from_id" => $id_from, "to_id" => $id_to));
+	}
+	function get_conversations($user_id) {
+		$selector = "MAX(date_time), from_id, to_id, message, seen, ID";
+		$conditions = "GROUP BY to_id, from_id";
+		return $this->select("messages", array("from_id" => $user_id, "to_id" => $user_id), 1, NULL, $selector, $conditions);
 	}
 	
 	// function item_count() {

@@ -23,6 +23,8 @@ class config {
 			"account_register" => "add/add_account",
 			"account_update" => "edit/edit_account",
 			"logout" => "main/logout",
+
+			"message_send" => "add/add_message"
 		);
 	}
 

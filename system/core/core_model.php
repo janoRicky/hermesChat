@@ -75,7 +75,7 @@ class core_model extends db {
 		return $this->select($table, $search_param, 1, $page);
 	}
 
-	function select($table, $conditions=NULL, $c_operator=NULL, $page=NULL, $selector=NULL) {
+	function select($table, $conditions=NULL, $c_operator=NULL, $page=NULL, $selector=NULL, $other_conditions=NULL) {
 		if ($conn = $this->connect()){
 			if ($selector != NULL) {
 				$sql = "SELECT $selector FROM $table";
@@ -92,13 +92,13 @@ class core_model extends db {
 				$param_var = "";
 				foreach ($conditions as $key => $val) {
 					$arr_count++;
-					if ($c_operator == 1) {
+					if ($c_operator == 2) {
 						$sql .= "$key LIKE ?";
 					} else {
 						$sql .= "$key = ?";
 					}
 					if ($arr_size > 1 && $arr_count != $arr_size) {
-						if ($c_operator == 1) {
+						if ($c_operator == 1 || $c_operator == 2) {
 							$sql .= " OR ";
 						} else {
 							$sql .= " AND ";
@@ -118,6 +118,10 @@ class core_model extends db {
 					$temp_arr = array($key => $val);
 					$bind_data = array_merge($bind_data, $temp_arr);
 				}
+			}
+
+			if ($other_conditions != NULL) {
+				$sql .= " ". $other_conditions;
 			}
 
 			$stmt = $conn->prepare($sql);

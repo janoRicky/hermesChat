@@ -2,6 +2,7 @@
 <div id="win_account_menu" class="window_container">
 	<div class="window win_md mb_3">
 		<?php
+		$user_id = (isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : "");
 		$user_name = (isset($_SESSION["user_name"]) ? $_SESSION["user_name"] : "");
 		$user_email = (isset($_SESSION["user_email"]) ? $_SESSION["user_email"] : "");
 		?>
@@ -10,9 +11,15 @@
 				<img src="<?=$this->cfg->base_url()?>assets/img/zeus.png" style="margin:auto;">
 			</div>
 			<div class="row pt_1">
-				<div class="window_img">
+				<div class="u_img window_img">
 					<div style="background-image: url('<?=$this->cfg->base_url() . ($_SESSION["user_img"] != "" ? $_SESSION["user_img"] : "assets/img/arrow.png")?>');"></div>
 				</div>
+			</div>
+			<div class="row window_label pt_2">
+				<span class="m_auto">USER ID</span>
+			</div>
+			<div class="row">
+				<span class="m_auto"><?=$user_id?></span>
 			</div>
 			<div class="row window_label pt_2">
 				<span class="m_auto">NAME</span>

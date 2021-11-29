@@ -17,7 +17,6 @@
 			}
 			document.getElementById("notif_container").style.background = "rgba(0,0,0," + (1 * (ctr / ctr_max)) + ")";
 			ctr -= 50;
-			console.log(ctr / ctr_max);
 		}, 50);
 	</script>
 <?php endif; ?>

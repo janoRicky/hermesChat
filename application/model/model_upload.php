@@ -6,7 +6,7 @@ class model_upload extends core_model {
 
 	public function ul_image_user($file) {
 		$ul_config = array(
-			"path" => "uploads/img/user_". $this->get_rows("users"),
+			"path" => "uploads/img/user_". $this->get_rows("users") + 1,
 			"file" => $file,
 			"file_name" => "profile",
 			"types" => "jpg|jpeg|png|gif",

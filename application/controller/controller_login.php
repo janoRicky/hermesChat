@@ -14,10 +14,10 @@ class controller_login extends core_controller {
 		$password = $this->post("inp_password");
 
 		if ($email != NULL && $password != NULL) {
-			$user_info = $this->read->user_verify($email)->fetch_array();
+			$user_info = $this->read->get_user_by_email($email)->fetch_array();
 			if ($user_info != NULL) {
 				if (password_verify($password, $user_info["password"])) {
-					$_SESSION["user_id"] = $user_info["ID"];
+					$_SESSION["user_id"] = $user_info["user_id"];
 					$_SESSION["user_name"] = $user_info["name"];
 					$_SESSION["user_email"] = $user_info["email"];
 					$_SESSION["user_img"] = $user_info["profile_img"];
