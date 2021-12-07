@@ -18,7 +18,7 @@ class core_model extends db {
 		$arr_size = count($data);
 		$param_var = "";
 
-		foreach ($data as $key => $val) {
+		foreach ($data as $val) {
 			$arr_count++;
 			if ($arr_size > 1) {
 				$var_ref_name = "binder" . $arr_count;
@@ -89,24 +89,36 @@ class core_model extends db {
 
 				$arr_count = 0;
 				$arr_size = count($conditions);
-				$param_var = "";
-				foreach ($conditions as $key => $val) {
-					$arr_count++;
-					if ($c_operator == 2) {
-						$sql .= "$key LIKE ?";
-					} else {
-						$sql .= "$key = ?";
-					}
-					if ($arr_size > 1 && $arr_count != $arr_size) {
-						if ($c_operator == 1 || $c_operator == 2) {
-							$sql .= " OR ";
+				if ($c_operator != 3) {
+					foreach ($conditions as $key => $val) {
+						$arr_count++;
+						if ($c_operator == 2) { // search
+							$sql .= "$key LIKE ?";
+						} elseif ($c_operator == 3) { // custom
+	
 						} else {
-							$sql .= " AND ";
+							$sql .= "$key = ?";
+						}
+						if ($arr_size > 1 && $arr_count != $arr_size && $c_operator != 3) {
+							if ($c_operator == 1 || $c_operator == 2) {
+								$sql .= " OR ";
+							} else {
+								$sql .= " AND ";
+							}
 						}
 					}
+					$bind_data = array_merge($bind_data, $conditions);
+				} else {
+					$sql .= $conditions["custom_condition"]["sql"];
+					if (isset($conditions["custom_condition"]["filters"])) {
+						$conditions = $conditions["custom_condition"]["filters"];
+						$bind_data = array_merge($bind_data, $conditions);
+					}
 				}
+			}
 
-				$bind_data = array_merge($bind_data, $conditions);
+			if ($other_conditions != NULL) {
+				$sql .= " ". $other_conditions;
 			}
 
 			if ($page != NULL) {
@@ -118,10 +130,6 @@ class core_model extends db {
 					$temp_arr = array($key => $val);
 					$bind_data = array_merge($bind_data, $temp_arr);
 				}
-			}
-
-			if ($other_conditions != NULL) {
-				$sql .= " ". $other_conditions;
 			}
 
 			$stmt = $conn->prepare($sql);

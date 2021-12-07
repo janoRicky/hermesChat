@@ -12,4 +12,7 @@ class model_create extends core_model {
 	public function message_add($data) {
 		return $this->add("messages", $data);
 	}
+	public function conversation_add($data) {
+		return $this->add("conversations", $data);
+	}
 }

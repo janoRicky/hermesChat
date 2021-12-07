@@ -210,6 +210,8 @@
 
 /* MAIN */
 .content {
+	min-height: 100%;
+	
 	background-color: #fbf3ce;
 
 	border-color: #e7dba1;
@@ -352,6 +354,7 @@ html {
 	font-family: "Lucida Console", "Courier New", monospace;
 }
 body {
+	height: 100%;
 	margin: 0;
 	background-color: #535b4c;
 	background-attachment: fixed;
@@ -368,6 +371,7 @@ button {
 
 .wrapping {
 	width: 100%;
+	height: 100%;
 	display: inline-block;
 	position: relative;
 	z-index: 2;

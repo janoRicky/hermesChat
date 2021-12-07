@@ -7,6 +7,7 @@ class controller_main extends core_controller {
 	function __construct() {
 		$this->load = new core_loader();
 		$this->model("read");
+		$this->model("update");
 
 		date_default_timezone_set("Asia/Manila");
 	}
@@ -63,28 +64,19 @@ class controller_main extends core_controller {
 
 		if (isset($_SESSION["user_id"])) {
 			$logged_in_id = $this->read->get_user_by_user_id($_SESSION["user_id"])->fetch_array()["ID"];
-			$conversations = $this->read->get_conversations($logged_in_id);
-
+			$conversations = $this->read->get_conversations_by_user_id($logged_in_id);
 			$data["conversations"] = array();
-			$data["logged_in_id"] = $logged_in_id;
 
-			$conversers = array();
 			foreach ($conversations as $row) {
-				$converser_id = NULL;
-				if ($row["from_id"] != $logged_in_id) {
-					$converser_id = $row["from_id"];
-				} elseif ($row["to_id"] != $logged_in_id) {
-					$converser_id = $row["to_id"];
+				if ($logged_in_id != $row["converser_1_id"]) {
+					$row["converser_id"] = $row["converser_1_id"];
+				} else {
+					$row["converser_id"] = $row["converser_2_id"];
 				}
-				if (!in_array($converser_id, $conversers) && $converser_id != NULL) {
-					array_push($conversers, $converser_id);
+				$row["c_details"] = $this->read->get_user_by_id($row["converser_id"])->fetch_array();
+				$row["m_details"] = $this->read->get_message_by_id($row["last_message_id"])->fetch_array();
 
-					$converser_details = $this->read->get_user_by_id($converser_id)->fetch_array();
-					$row["converser_user_id"] = $converser_details["user_id"];
-					$row["converser_name"] = $converser_details["name"];
-					$row["converser_img"] = $converser_details["profile_img"];
-					array_push($data["conversations"], $row);
-				}
+				array_push($data["conversations"], $row);
 			}
 		}
 		
@@ -96,33 +88,52 @@ class controller_main extends core_controller {
 
 		$cmid = $this->get("cm");
 		if ($cmid != NULL && ($cmid != $_SESSION["user_id"])) {
-			$user_id = $this->read->get_user_by_user_id($_SESSION["user_id"])->fetch_array()["ID"];
-			$chatmate_details = $this->read->get_user_by_user_id($cmid)->fetch_array();
-			$chatmate_id = $chatmate_details["ID"];
+			$chatmate = $this->read->get_user_by_user_id($cmid);
 
-			$chats_mine = array();
-			foreach ($this->read->get_messages($user_id, $chatmate_id) as $row) {
-				array_push($chats_mine, $row);
+			if ($chatmate->num_rows > 0) {
+				$user_id = $this->read->get_user_by_user_id($_SESSION["user_id"])->fetch_array()["ID"];
+				$chatmate_details = $chatmate->fetch_array();
+				$chatmate_id = $chatmate_details["ID"];
+
+				$chats_mine = array();
+				foreach ($this->read->get_messages($user_id, $chatmate_id) as $row) {
+					array_push($chats_mine, $row);
+				}
+				$chats_theirs = array();
+				foreach ($this->read->get_messages($chatmate_id, $user_id) as $row) {
+					array_push($chats_theirs, $row);
+				}
+
+				$data["user_id"] = $user_id;
+				$data["chatmate_id"] = $cmid;
+
+				$data["receiver_profile"] = $chatmate_details["profile_img"];
+				$data["receiver_name"] = $chatmate_details["name"];
+
+				$data["chats"] = array_merge($chats_mine, $chats_theirs);
+				function cmp($a, $b) { return strcmp($a["date_time"], $b["date_time"]); } // sort by date_time
+				uasort($data["chats"], "cmp");
+
+				$conversation = $this->read->get_conversations_by_converser_id($user_id, $chatmate_id);
+				if ($conversation->num_rows > 0) {
+					$conversation_details = $conversation->fetch_array();
+					if ($conversation_details["last_converser_id"] != $user_id && $conversation_details["seen"] == 0) {
+						$data_upd = array(
+							"seen" => 1
+						);
+						$this->update->conversation_update($conversation_details["ID"], $data_upd);
+					}
+				}
+
+				$this->load->view("messaging", $data);
+			} else {
+				$_SESSION["alert"] = "User <i>". $cmid ."</i> does not exist.";
+				header("Location: conversations");
 			}
-			$chats_theirs = array();
-			foreach ($this->read->get_messages($chatmate_id, $user_id) as $row) {
-				array_push($chats_theirs, $row);
-			}
-
-			$data["user_id"] = $user_id;
-			$data["chatmate_id"] = $cmid;
-
-			$data["receiver_profile"] = $chatmate_details["profile_img"];
-			$data["receiver_name"] = $chatmate_details["name"];
-
-			$data["chats"] = array_merge($chats_mine, $chats_theirs);
-			function cmp($a, $b) { return strcmp($a["date_time"], $b["date_time"]); } // sort by date_time
-			uasort($data["chats"], "cmp");
-
-			$this->load->view("messaging", $data);
 		} else {
 			header("Location: conversations");
 		}
+		exit();
 	}
 
 	// function view_accounts() {

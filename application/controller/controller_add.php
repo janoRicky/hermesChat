@@ -8,6 +8,7 @@ class controller_add extends core_controller {
 		$this->load = new core_loader();
 		$this->model("read");
 		$this->model("create");
+		$this->model("update");
 		$this->model("upload");
 	}
 
@@ -58,14 +59,46 @@ class controller_add extends core_controller {
 
 			if ($from_id != NULL && $to_id != NULL && $message != NULL) {
 				if (strlen($message) < 767) {
-					$data = array(
-						"from_id" => $from_id,
-						"to_id" => $to_id,
-						"message" => $message,
-						"date_time" => date("Y-m-d H:i:s")
-					);
-					if (!$this->create->message_add($data)) {
-						$_SESSION["alert"] = "Something went wrong. Please try again later.";
+
+					$conversation = $this->read->get_conversations_by_converser_id($from_id, $to_id);
+					if ($conversation->num_rows < 1) {
+						$data = array(
+							"converser_1_id" => $from_id,
+							"converser_2_id" => $to_id,
+							"last_message_id" => $this->read->get_rows("messages"),
+							"last_converser_id" => $from_id,
+							"seen" => 0
+						);
+						if (!$this->create->conversation_add($data)) {
+							$_SESSION["alert"] = "Something went wrong. Please try again later. wat";
+						}
+						$conversation_id = $this->read->get_rows("conversations");
+					} else {
+						$c_details = $conversation->fetch_array();
+						$data = array(
+							"converser_1_id" => $from_id,
+							"converser_2_id" => $to_id,
+							"last_message_id" => $this->read->get_rows("messages") + 1,
+							"last_converser_id" => $from_id,
+							"seen" => 0
+						);
+						if (!$this->update->conversation_update($c_details["ID"], $data)) {
+							$_SESSION["alert"] = "Something went wrong. Please try again later.";
+						}
+						$conversation_id = $c_details["ID"];
+					}
+
+					if ($conversation_id != NULL) {
+						$data = array(
+							"conversation_id" => $conversation_id,
+							"from_id" => $from_id,
+							"to_id" => $to_id,
+							"message" => $message,
+							"date_time" => date("Y-m-d H:i:s")
+						);
+						if (!$this->create->message_add($data)) {
+							$_SESSION["alert"] = "Something went wrong. Please try again later.";
+						}
 					}
 				} else {
 					$_SESSION["alert"] = "Message is too long (< 767).";

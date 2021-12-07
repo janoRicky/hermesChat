@@ -7,4 +7,7 @@ class model_update extends core_model {
 	public function user_update($id, $data) {
 		return $this->update("users", $data, array("ID" => $id));
 	}
+	public function conversation_update($id, $data) {
+		return $this->update("conversations", $data, array("ID" => $id));
+	}
 }
