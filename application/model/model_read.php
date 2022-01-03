@@ -24,37 +24,14 @@ class model_read extends core_model {
 		return $this->select("conversations", $custom_condition, 3);
 	}
 
-	function get_messages($id_from, $id_to, $pg=NULL) {
-		return $this->select("messages", array("from_id" => $id_from, "to_id" => $id_to), NULL, $pg);
+	function get_messages($c_id, $pg=NULL) {
+		// return $this->select("messages", array("from_id" => $id_from, "to_id" => $id_to), NULL, $pg);
+		return $this->select("messages", array("conversation_id" => $c_id), NULL, $pg);
+	}
+	function get_messages_count($c_id) {
+		return $this->select("messages", array("conversation_id" => $c_id), NULL, NULL, "ID")->num_rows;
 	}
 	function get_message_by_id($id) {
 		return $this->select("messages", array("ID" => $id));
 	}
-	// function get_conversations($user_id, $pg=NULL) {
-	// 	$selector = "ID, from_id, to_id, message, seen, date_time";
-	// 	$conditions = "GROUP BY to_id, from_id ORDER BY ID ASC";
-	// 	$custom_condition = array("custom_condition" => array(
-	// 		0 => "ID IN (SELECT MAX(ID) FROM messages WHERE ",
-	// 		"filters" => array("from_id" => $user_id, "to_id" => $user_id),
-	// 		// "filter_operators" => array("OR"),
-	// 		1 => " GROUP BY to_id, from_id)"
-	// 	));
-	// 	return $this->select("messages", $custom_condition, 3, $pg, $selector, $conditions);
-	// }
-	
-	// function item_count() {
-	// 	return $this->get_rows("p_items");
-	// }
-	// function item_get($page) {
-	// 	return $this->select("p_items", NULL, NULL, $page);
-	// }
-	// function item_search_count($search) {
-	// 	return $this->get_rows("p_items", $search);
-	// }
-	// function item_search($search, $page) {
-	// 	return $this->general_search("p_items", $search, $page);
-	// }
-	// function item_det_get($id) {
-	// 	return $this->select("p_items", array("id" => $id));
-	// }
 }

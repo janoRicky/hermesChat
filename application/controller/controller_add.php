@@ -65,7 +65,7 @@ class controller_add extends core_controller {
 						$data = array(
 							"converser_1_id" => $from_id,
 							"converser_2_id" => $to_id,
-							"last_message_id" => $this->read->get_rows("messages"),
+							"last_message_id" => $this->read->get_rows("messages") + 1,
 							"last_converser_id" => $from_id,
 							"seen" => 0
 						);
@@ -101,7 +101,7 @@ class controller_add extends core_controller {
 						}
 					}
 				} else {
-					$_SESSION["alert"] = "Message is too long (< 767).";
+					$_SESSION["alert"] = "Message is too long.";
 				}
 			} else {
 				$_SESSION["alert"] = "All inputs must be filled.";

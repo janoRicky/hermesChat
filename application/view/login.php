@@ -14,13 +14,13 @@ $this->view("template/notifications");
 			<div class="row_12">
 				<div class="row greek_pattern_alt mt_1 mb_1" style="height: 3rem;"></div>
 				<div class="row login_content" style="justify-content: center;">
-					<div class="row_3 text_center">
+					<div class="row_3 text_center row_md">
 						<img class="login_logo" src="./assets/img/hermes_chat_logo.png">
 					</div>
-					<div class="row_2 title text_center">
+					<div class="row_2 title text_center dis_none_md">
 						<span style="margin: auto;">HERMES CHAT</span>
 					</div>
-					<div class="row_4 text_center ">
+					<div class="row_4 text_center row_md">
 						<form action="login_v" method="POST">
 							<label class="login_label">Email:</label><br>
 							<input class="textbox txt_md text_center mb_1" type="text" name="inp_email">

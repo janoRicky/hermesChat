@@ -10,45 +10,67 @@ $this->view("template/notifications");
 		<div class="content">
 			<div class="row pt_1 pb_1">
 				<div class="row">
-					<div class="row_2" style="margin-left: auto;">
+					<div class="row_2 row_sm" style="margin-left: auto;">
 						<div class="row">
 							<div class="u_img messaging_img">
 								<div style="background-image: url('<?=$this->cfg->base_url() . ($receiver_profile != "" ? $receiver_profile : "assets/img/arrow.png")?>');"></div>
 							</div>
 						</div>
 					</div>
-					<div class="row_4" style="margin-right: auto; color: #3d413a;">
+					<div class="row_4 row_sm" style="margin-right: auto; color: #3d413a;">
 						<h1><?=$receiver_name?></h1>
+						<i>[<?=$receiver_id?>]</i>
 					</div>
 				</div>
 			</div>
 			<div class="row greek_pattern" style="height: 2rem;"></div>
 			<div class="row chats">
 				<div class="row_10 m_auto">
+					<?php if (isset($offset) && $offset > 1):?>
+						<div class="row pt_1 pb_1">
+							<div class="row_12 text_center">
+								<a href="messaging?cm=<?=$receiver_id?>&os=<?=$offset - 1?>" style="color: blue;">[ Older Messages ]</a>
+							</div>
+						</div>
+					<?php endif; ?>
 					
-					<?php if (sizeof($chats) > 0): ?>
-						<?php foreach ($chats as $row): ?>
+					<?php if (isset($chats) && $chats->num_rows > 0):
+						$current_date = 0;
+						?>
+						<?php foreach ($chats as $row):
+							$datetime = strtotime($row["date_time"]);
+							$date = date("Y-m-d", $datetime);
+							$time = date("h:iA", $datetime);
+							if ($current_date != $date): ?>
+								<div class="row">
+									<div class="row_12 text_center">
+										<i style="color: #888;">
+											<?=$date?>
+										</i>
+									</div>
+								</div>
+							<?php $current_date = $date; endif; ?>
 							<div class="row">
 								<?php if ($row["to_id"] == $user_id): ?>
 									<div class="row_8 chat chat_received">
 										<div>
-											<?=$row["message"]?>
+											<?=nl2br($row["message"])?>
 										</div>
 									</div>
 									<div class="row_4 text_center">
 										<div class="p_1">
-											<?=$row["date_time"]?>
+											<?=$time?>
 										</div>
 									</div>
 								<?php else: ?>
 									<div class="row_4 text_center">
 										<div class="p_1">
-											<?=$row["date_time"]?>
+											<?=$time?>
 										</div>
 									</div>
 									<div class="row_8 chat chat_sent">
 										<div>
-											<?=$row["message"]?>
+											<?=nl2br($row["message"])?>
 										</div>
 									</div>
 								<?php endif; ?>
@@ -59,17 +81,25 @@ $this->view("template/notifications");
 							<span class="m_auto">Send a message to start a conversation</span>
 						</div>
 					<?php endif; ?>
+
+					<?php if (isset($offset_max) && $offset_max != $offset):?>
+						<div class="row pt_2 pb_2">
+							<div class="row_12 text_center">
+								<a href="messaging?cm=<?=$receiver_id?>&os=<?=$offset + 1?>" style="color: blue;">[ Newer Messages ]</a>
+							</div>
+						</div>
+					<?php endif; ?>
 				</div>
 			</div>
 			<div class="row greek_pattern" style="height: 2rem;"></div>
 			<div class="row pt_1 pb_3">
 				<div class="row_1"></div>
 				<div class="row_10">
-					<form class="form" action="message_send" method="POST">
+					<form id="frm_message" class="form" action="message_send" method="POST">
 						<input type="hidden" name="inp_receiver_id" value="<?=$chatmate_id?>">
 						<div class="row details">
 							<div class="row_9 text_left">
-								<textarea style=" width: 100%; height: 100%; resize: none; " name="inp_message" maxlength="766"></textarea>
+								<textarea id="inp_message" style=" width: 100%; height: 100%; resize: none; " name="inp_message" maxlength="766"></textarea>
 							</div>
 							<div class="row_3 text_center">
 								<button>
@@ -102,6 +132,17 @@ $this->view("template/notifications");
 		} else {
 			document.querySelector("#account_update_div").style.display = "none";
 		}
+	};
+
+
+    document.querySelector("#inp_message").onkeydown  = function(e) {
+        var key = (e.keyCode ? e.keyCode : e.which);
+        if (key == 13 && e.ctrlKey) {
+        	document.querySelector("#inp_message").value += "\n";
+        } else if (key == 13) {
+            document.querySelector("#frm_message").submit();
+            return false;
+        }
 	};
 </script>
 </html>

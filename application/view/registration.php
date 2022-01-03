@@ -14,7 +14,7 @@ $this->view("template/notifications");
 			<div class="row_12">
 				<div class="row greek_pattern_alt mt_1 mb_1" style="height: 3rem;"></div>
 				<div class="row login_content" style="justify-content: center;">
-					<div class="row_12 title text_center">
+					<div class="row_12 title text_center dis_none_xs">
 						<span class="m_auto">HERMES CHAT</span><br>
 						<div class="row">
 							<span class="m_auto" style="font-size: 1.5rem; color: white;">Account Registration</span>

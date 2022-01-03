@@ -5,7 +5,7 @@ session_start();
 class config {
 
 	function __construct() {
-		$this->page_limit = 3;
+		$this->page_limit = 5;
 		$this->notif_timeout = 10000;
 
 		$this->base_url = "http://". $_SERVER["SERVER_NAME"] . "/hermes_chat/";

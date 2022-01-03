@@ -19,4 +19,7 @@
 			ctr -= 50;
 		}, 50);
 	</script>
-<?php endif; ?>
+<?php 
+unset($_SESSION["alert"]);
+endif;
+?>

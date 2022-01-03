@@ -6,6 +6,7 @@ class controller_main extends core_controller {
 
 	function __construct() {
 		$this->load = new core_loader();
+ 		$this->cfg = new config();
 		$this->model("read");
 		$this->model("update");
 
@@ -21,24 +22,6 @@ class controller_main extends core_controller {
 		session_destroy();
 		header("Location: login");
 	}
-	// function page_details($page_no, $table_size, $page_limit) {
-	// 	$desc = "Showing " . ((($page_no - 1) * $page_limit) + 1) . "-" . ($page_no * $page_limit < $table_size ? $page_no * $page_limit : $table_size) . " results of " . $table_size . " rows.";
-	// 	$prev = NULL;
-	// 	$next = NULL;
-	// 	if ($page_no > 1) {
-	// 		$prev = ($page_no - 1);
-	// 	}
-	// 	if ($table_size > ($page_no * $page_limit)) {
-	// 		$next = ($page_no + 1);
-	// 	}
-	// 	$details = array(
-	// 		"desc" => $desc,
-	// 		"prev" => $prev,
-	// 		"next" => $next
-	// 	);
-	// 	return $details;
-	// }
-
 	function view_login() {
 		if (isset($_SESSION["user_in"])) {
 			header("Location: conversations");
@@ -86,6 +69,7 @@ class controller_main extends core_controller {
 		$this->login_check();
 		$data["head_title"] = "Messaging - Hermes Chat";
 
+		$os = $this->get("os");
 		$cmid = $this->get("cm");
 		if ($cmid != NULL && ($cmid != $_SESSION["user_id"])) {
 			$chatmate = $this->read->get_user_by_user_id($cmid);
@@ -94,29 +78,36 @@ class controller_main extends core_controller {
 				$user_id = $this->read->get_user_by_user_id($_SESSION["user_id"])->fetch_array()["ID"];
 				$chatmate_details = $chatmate->fetch_array();
 				$chatmate_id = $chatmate_details["ID"];
-
-				$chats_mine = array();
-				foreach ($this->read->get_messages($user_id, $chatmate_id) as $row) {
-					array_push($chats_mine, $row);
-				}
-				$chats_theirs = array();
-				foreach ($this->read->get_messages($chatmate_id, $user_id) as $row) {
-					array_push($chats_theirs, $row);
-				}
+				$conversation = $this->read->get_conversations_by_converser_id($user_id, $chatmate_id);
 
 				$data["user_id"] = $user_id;
 				$data["chatmate_id"] = $cmid;
 
 				$data["receiver_profile"] = $chatmate_details["profile_img"];
 				$data["receiver_name"] = $chatmate_details["name"];
+				$data["receiver_id"] = $chatmate_details["user_id"];
 
-				$data["chats"] = array_merge($chats_mine, $chats_theirs);
-				function cmp($a, $b) { return strcmp($a["date_time"], $b["date_time"]); } // sort by date_time
-				uasort($data["chats"], "cmp");
+				// function cmp($a, $b) { return strcmp($a["date_time"], $b["date_time"]); } // sort by date_time
+				// uasort($data["chats"], "cmp");
 
-				$conversation = $this->read->get_conversations_by_converser_id($user_id, $chatmate_id);
 				if ($conversation->num_rows > 0) {
 					$conversation_details = $conversation->fetch_array();
+
+					$m_count = $this->read->get_messages_count($conversation_details["ID"]);
+					$os_max = $m_count / $this->cfg->page_limit();
+					if ($os_max > 1) {
+						if ($this->cfg->page_limit() % $os_max > 0) {
+							$os_max += 1;
+						}
+					}
+					$os_max = floor($os_max);
+					if ($os == NULL) {
+						$os = $os_max;
+					}
+					$data["offset"] = $os;
+					$data["offset_max"] = $os_max;
+					$data["chats"] = $this->read->get_messages($conversation_details["ID"], $os);
+
 					if ($conversation_details["last_converser_id"] != $user_id && $conversation_details["seen"] == 0) {
 						$data_upd = array(
 							"seen" => 1
@@ -135,59 +126,4 @@ class controller_main extends core_controller {
 		}
 		exit();
 	}
-
-	// function view_accounts() {
-	// 	$page = (int)$this->get("pg");
-	// 	$search = $this->get("search");
-
-	// 	$data["head_title"] = "Accounts - hermes_chat";
-	// 	$data["nav_link"] = "accounts";
-	// 	$data["nav_text"] = "Accounts";
-
-	// 	if ($page == NULL) {
-	// 		$page = 1;
-	// 	}
-	// 	if ($search != NULL) {
-	// 		$data["search_val"] = $search;
-	// 		$table_size = $this->read->admin_search_count($data["search_val"]);
-	// 		$data["table"] = $this->read->admin_search($data["search_val"], $page);
-	// 	} else {
-	// 		$data["search_val"] = NULL;
-	// 		$table_size = $this->read->admin_count();
-	// 		$data["table"] = $this->read->admin_get($page);
-	// 	}
-
-	// 	$page_limit = $this->load->cfg->page_limit();
-	// 	$data["page_details"] = $this->page_details($page, $table_size, $page_limit);
-
-	// 	$this->load->view("accounts", $data);
-	// }
-	// function view_account() {
-	// 	$id = $this->get("id");
-
-	// 	$data["head_title"] = "Account View - hermes_chat";
-	// 	$data["nav_link"] = "accounts";
-	// 	$data["nav_text"] = "Accounts > View";
-
-	// 	if ($id != NULL) {
-	// 		$data["table"] = $this->read->admin_acc_get($id);
-	// 		$this->load->view("accounts_view", $data);
-	// 	} else {
-	// 		header("Location: accounts");
-	// 	}
-	// }
-	// function view_account_update() {
-	// 	$id = $this->get("id");
-
-	// 	$data["head_title"] = "Account View - hermes_chat";
-	// 	$data["nav_link"] = "accounts";
-	// 	$data["nav_text"] = "Accounts > Edit";
-
-	// 	if ($id != NULL) {
-	// 		$data["table"] = $this->read->admin_acc_get($id);
-	// 		$this->load->view("accounts_edit", $data);
-	// 	} else {
-	// 		header("Location: accounts");
-	// 	}
-	// }
 }
