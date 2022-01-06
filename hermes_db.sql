@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 07, 2021 at 08:40 AM
+-- Generation Time: Jan 06, 2022 at 09:12 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.3.31
 
@@ -33,8 +33,16 @@ CREATE TABLE `conversations` (
   `converser_2_id` varchar(11) DEFAULT NULL,
   `last_message_id` int(11) DEFAULT NULL,
   `last_converser_id` int(11) DEFAULT NULL,
-  `seen` tinyint(1) DEFAULT NULL
+  `seen` tinyint(1) DEFAULT NULL,
+  `status` int(2) DEFAULT 0 COMMENT '0=none;\r\n1=user2 confirmation;\r\n2=confirmed;'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `conversations`
+--
+
+INSERT INTO `conversations` (`ID`, `converser_1_id`, `converser_2_id`, `last_message_id`, `last_converser_id`, `seen`, `status`) VALUES
+(1, '2', '1', 4, 2, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -50,6 +58,16 @@ CREATE TABLE `messages` (
   `message` varchar(767) DEFAULT NULL,
   `date_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`ID`, `conversation_id`, `from_id`, `to_id`, `message`, `date_time`) VALUES
+(1, 1, 1, 2, 'hi', '2022-01-07 03:18:11'),
+(2, 1, 2, 1, 'hello', '2022-01-07 03:18:33'),
+(3, 1, 1, 2, 'hoy', '2022-01-07 03:43:35'),
+(4, 1, 2, 1, 'wat', '2022-01-04 04:05:07');
 
 -- --------------------------------------------------------
 
@@ -73,12 +91,28 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`ID`, `user_id`, `email`, `password`, `name`, `gender`, `birthday`, `profile_img`) VALUES
-(1, 'USR0000001', 'test@email.com', '$2y$10$nuwMlRSTBJ7QuK3oXJodb.GsPExVfs5Dk4TkhZrls7hotg7dEBEOO', 'tester', NULL, NULL, NULL),
-(2, 'USR0000002', 'santa@email.com', '$2y$10$1Jy4R6M/KeWiphHdpFDDE.UsioiUjRhLAWgea/h9EfxBfxOnWCND.', 'Santanas', NULL, NULL, 'uploads/img/user_1/profile.png'),
-(3, 'USR0000003', 'user@email.com', '$2y$10$BPeyzFfD3CszpT93vTYXSuS2JEDfCoY9woWggKR0Y26TcGAE1//4a', 'User', NULL, NULL, 'uploads/img/user_2/profile.jpeg'),
-(4, 'USR0000004', 'master@email.com', '$2y$10$QmociH33RacECE7kQ9jRU.xZSd/Aj/inOviuHlcTZelld9oZ9o7HS', 'Master', NULL, NULL, 'uploads/img/user_3/profile.jpeg'),
-(5, 'USR0000005', '1@email.com', '$2y$10$KXqgBvhd30M7VE18BeXZ/.n2wrKRgG6rmvIokVQP6NxqTI/XfMIi.', '1', NULL, NULL, ''),
-(6, 'USR0000006', '2@email.com', '$2y$10$7hCTGo7kr36QvnWkH3KPRu4e0T53.KHn3Be3ys2gcE6D.YIoRBmCu', 'Joker', NULL, NULL, '1/profile.jpeg');
+(1, 'USR0000001', 'batman@email.com', '$2y$10$/DzMdkMqUQRBbLmzg1oqe.GZY0MY0zLcIEBUpuMSG9t.pS.EaqfB6', 'BATMAN', NULL, NULL, 'uploads/img/user_USR0000001/profile.jpeg'),
+(2, 'USR0000002', 'joker@email.com', '$2y$10$bYe0WLvDIBkXFb3k2xoNa.2tRWQjGnrQrLJLQCIUw0TuGUof2Aaaa', 'JOKER', NULL, NULL, 'uploads/img/user_USR0000002/profile.jpeg');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users_login`
+--
+
+CREATE TABLE `users_login` (
+  `id` int(11) NOT NULL,
+  `user_id` varchar(11) DEFAULT NULL,
+  `log_in_last` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `users_login`
+--
+
+INSERT INTO `users_login` (`id`, `user_id`, `log_in_last`) VALUES
+(1, 'USR0000001', '2022-01-07 03:47:50'),
+(2, 'USR0000002', '2022-01-07 04:12:04');
 
 --
 -- Indexes for dumped tables
@@ -103,6 +137,12 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`ID`);
 
 --
+-- Indexes for table `users_login`
+--
+ALTER TABLE `users_login`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -110,19 +150,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `conversations`
 --
 ALTER TABLE `conversations`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `users_login`
+--
+ALTER TABLE `users_login`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

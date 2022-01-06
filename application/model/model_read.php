@@ -4,6 +4,11 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/hermes_chat/system/core/core_model.ph
 
 class model_read extends core_model {
 
+	function count_table($table_name) {
+		return $this->get_rows("users");
+	}
+
+
 	function get_user_by_email($email) {
 		return $this->select("users", array("email" => $email));
 	}
@@ -12,6 +17,10 @@ class model_read extends core_model {
 	}
 	function get_user_by_user_id($id) {
 		return $this->select("users", array("user_id" => $id));
+	}
+
+	function get_user_login_time_by_user_id($user_id) {
+		return $this->select("users_login", array("user_id" => $user_id));
 	}
 
 	function get_conversations_by_user_id($id) {

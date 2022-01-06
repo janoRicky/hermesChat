@@ -363,6 +363,12 @@
 	.dis_none_sm {
 		display: none !important;
 	}
+	.navbar_title span {
+		font-size: 1.65rem;
+	}
+	.win_85_sm {
+		width: 85% !important;
+	}
 }
 
 @media (min-width: 992px) {

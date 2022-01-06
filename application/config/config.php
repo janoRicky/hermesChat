@@ -5,7 +5,7 @@ session_start();
 class config {
 
 	function __construct() {
-		$this->page_limit = 5;
+		$this->page_limit = 10;
 		$this->notif_timeout = 10000;
 
 		$this->base_url = "http://". $_SERVER["SERVER_NAME"] . "/hermes_chat/";
@@ -24,7 +24,11 @@ class config {
 			"account_update" => "edit/edit_account",
 			"logout" => "main/logout",
 
-			"message_send" => "add/add_message"
+			"request_conversation" => "add/conversation_request",
+			"request_conversation_accept" => "add/conversation_request_accept",
+			"message_send" => "add/add_message",
+
+			"ajax_user_log_in_check" => "edit/ajax_edit_user_login"
 		);
 	}
 

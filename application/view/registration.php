@@ -26,11 +26,11 @@ $this->view("template/notifications");
 							<label class="login_label">Profile Image: <input type="file" name="inp_image"></label><br>
 							
 							<label class="login_label">Name:</label><br>
-							<input class="textbox txt_md text_center mb_1" type="text" name="inp_name">
+							<input class="textbox txt_md text_center mb_1" type="text" name="inp_name" maxlength="64" required>
 							<label class="login_label">Email:</label><br>
-							<input class="textbox txt_md text_center mb_1" type="email" name="inp_email">
+							<input class="textbox txt_md text_center mb_1" type="email" name="inp_email" maxlength="64" required>
 							<label class="login_label">Password:</label><br>
-							<input class="textbox txt_md text_center mb_1" type="password" name="inp_password">
+							<input class="textbox txt_md text_center mb_1" type="password" name="inp_password" maxlength="64" required>
 
 							<button class="button mt_1">
 								<div>REGISTER</div>

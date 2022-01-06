@@ -22,12 +22,13 @@ class controller_edit extends core_controller {
 				$email_check = $this->read->get_user_by_email($email);
 				if ($email_check->num_rows < 1 || $email == $_SESSION["user_email"]) {
 					if (strlen($name) <= 60 || strlen($email) <= 60) {
+						$user_info = $this->read->get_user_by_id($id)->fetch_array();
 						$data = array(
 							"name" => $name,
 							"email" => $email
 						);
 						if ($_FILES["inp_image"]["size"] > 0) {
-							$data["profile_img"] = $this->upload->ul_image_user($_FILES["inp_image"]);
+							$data["profile_img"] = $this->upload->ul_image_user($_FILES["inp_image"], $user_info["user_id"]);
 						}
 						if ($password != NULL && strlen($password) <= 60) {
 							$data["password"] = password_hash($password, PASSWORD_DEFAULT);
@@ -35,10 +36,9 @@ class controller_edit extends core_controller {
 						if ($this->update->user_update($id, $data)) {
 							$_SESSION["alert"] = "Successfully updated Account details.";
 
-							$user_info = $this->read->get_user_by_id($id)->fetch_array();
-							$_SESSION["user_name"] = $user_info["name"];
-							$_SESSION["user_email"] = $user_info["email"];
-							$_SESSION["user_img"] = $user_info["profile_img"];
+							$_SESSION["user_name"] = $name;
+							$_SESSION["user_email"] = $email;
+							$_SESSION["user_img"] = $data["profile_img"];
 						} else {
 							$_SESSION["alert"] = "Something went wrong. Please try again later.";
 						}
@@ -56,5 +56,17 @@ class controller_edit extends core_controller {
 		}
 		header("Location: conversations");
 		exit();
+	}
+	function ajax_edit_user_login() {
+		if (isset($_SESSION["user_id"])) {
+			$user = $this->read->get_user_by_user_id($_SESSION["user_id"]);
+
+			if ($user->num_rows > 0) {
+				$data = array(
+					"log_in_last" => date("Y-m-d H:i:s")
+				);
+				$this->update->user_login_update($_SESSION["user_id"], $data);
+			}
+		}
 	}
 }

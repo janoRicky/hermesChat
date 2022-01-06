@@ -5,8 +5,10 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/hermes_chat/system/core/core_model.ph
 class model_create extends core_model {
 
 	public function user_add($data) {
-		$data["user_id"] = "USR". str_pad($this->get_rows("users") + 1, 7, '0', STR_PAD_LEFT);
 		return $this->add("users", $data);
+	}
+	public function user_login_add($user_id) {
+		return $this->add("users_login", array("user_id" => $user_id));
 	}
 
 	public function message_add($data) {

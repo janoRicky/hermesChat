@@ -22,13 +22,16 @@ class controller_add extends core_controller {
 
 			if ($email_check->num_rows < 1) {
 				if (strlen($name) <= 64 || strlen($email) <= 64 || strlen($password) <= 64) {
+					$user_id = "USR". str_pad($this->read->count_table("users") + 1, 7, '0', STR_PAD_LEFT);
 					$data = array(
+						"user_id" => $user_id,
 						"name" => $name,
 						"email" => $email,
 						"password" => password_hash($password, PASSWORD_DEFAULT),
-						"profile_img" => $this->upload->ul_image_user($_FILES["inp_image"])
+						"profile_img" => $this->upload->ul_image_user($_FILES["inp_image"], $user_id)
 					);
 					if ($this->create->user_add($data)) {
+						$this->create->user_login_add($user_id);
 						$_SESSION["alert"] = "Successfully registered Account.";
 						header("Location: login");
 						exit();
@@ -51,7 +54,7 @@ class controller_add extends core_controller {
 	function add_message() {
 		$receiver_id = $this->post("inp_receiver_id");
 		$message = $this->post("inp_message");
-		$date = date("Y-m-d h:i:s");
+		// $date = date("Y-m-d h:i:s");
 
 		if (isset($_SESSION["user_id"])) {
 			$from_id = $this->read->get_user_by_user_id($_SESSION["user_id"])->fetch_array()["ID"];
@@ -105,6 +108,75 @@ class controller_add extends core_controller {
 				}
 			} else {
 				$_SESSION["alert"] = "All inputs must be filled.";
+			}
+		} else {
+			$_SESSION["alert"] = "Something went wrong. Please try again later.";
+		}
+		header("Location: messaging?cm=". $receiver_id);
+		exit();
+	}
+	function conversation_request() {
+		$receiver_id = $this->post("inp_receiver_id");
+		// $date = date("Y-m-d h:i:s");
+
+		if (isset($_SESSION["user_id"])) {
+			$from_id = $this->read->get_user_by_user_id($_SESSION["user_id"])->fetch_array()["ID"];
+			$to_id = $this->read->get_user_by_user_id($receiver_id)->fetch_array()["ID"];
+
+			if ($from_id != NULL && $to_id != NULL) {
+				$conversation = $this->read->get_conversations_by_converser_id($from_id, $to_id);
+
+				if ($conversation->num_rows < 1) {
+					$data = array(
+						"converser_1_id" => $from_id,
+						"converser_2_id" => $to_id,
+						// "last_converser_id" => $from_id,
+						"seen" => 0,
+						"status" => 1
+					);
+					if (!$this->create->conversation_add($data)) {
+						$_SESSION["alert"] = "Something went wrong. Please try again later.";
+					}
+				} else {
+					$_SESSION["alert"] = "Something went wrong. Please try again later.";
+				}
+			} else {
+				$_SESSION["alert"] = "Something went wrong. Please try again later.";
+			}
+		} else {
+			$_SESSION["alert"] = "Something went wrong. Please try again later.";
+		}
+		header("Location: messaging?cm=". $receiver_id);
+		exit();
+	}
+	function conversation_request_accept() {
+		$receiver_id = $this->post("inp_receiver_id");
+		// $date = date("Y-m-d h:i:s");
+
+		if (isset($_SESSION["user_id"])) {
+			$from_id = $this->read->get_user_by_user_id($_SESSION["user_id"])->fetch_array()["ID"];
+			$to_id = $this->read->get_user_by_user_id($receiver_id)->fetch_array()["ID"];
+
+			if ($from_id != NULL && $to_id != NULL) {
+				$conversation = $this->read->get_conversations_by_converser_id($from_id, $to_id);
+
+				if ($conversation->num_rows > 0) {
+					$c_details = $conversation->fetch_array();
+					$data = array(
+						"converser_1_id" => $from_id,
+						"converser_2_id" => $to_id,
+						// "last_converser_id" => $from_id,
+						"seen" => 0,
+						"status" => 2
+					);
+					if (!$this->update->conversation_update($c_details["ID"], $data)) {
+						$_SESSION["alert"] = "Something went wrong. Please try again later.";
+					}
+				} else {
+					$_SESSION["alert"] = "Something went wrong. Please try again later.";
+				}
+			} else {
+				$_SESSION["alert"] = "Something went wrong. Please try again later.";
 			}
 		} else {
 			$_SESSION["alert"] = "Something went wrong. Please try again later.";

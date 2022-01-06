@@ -10,13 +10,13 @@ $this->view("template/notifications");
 		<div class="content">
 			<div class="row text_center pt_1 " style="justify-content: center;">
 				<div class="row_1">
-					<img class="page_laurel" src="<?=$this->cfg->base_url()?>assets/img/laurel_left.png" style="margin:auto;">
+					<img class="page_laurel dis_none_md" src="<?=$this->cfg->base_url()?>assets/img/laurel_left.png" style="margin:auto;">
 				</div>
-				<div class="row_4">
+				<div class="row_4 row_md">
 					<span class="page_label text_center">CONVERSATIONS</span>
 				</div>
 				<div class="row_1">
-					<img class="page_laurel" src="<?=$this->cfg->base_url()?>assets/img/laurel_right.png" style="margin:auto;">
+					<img class="page_laurel dis_none_md" src="<?=$this->cfg->base_url()?>assets/img/laurel_right.png" style="margin:auto;">
 				</div>
 			</div>
 			<div class="row greek_pattern" style="height: 2rem;"></div>
@@ -24,7 +24,9 @@ $this->view("template/notifications");
 				<div class="row_1"></div>
 				<div class="row_10">
 					<?php if (sizeof($conversations) > 0): ?>
-						<?php foreach ($conversations as $row): ?>
+						<?php foreach ($conversations as $row): 
+							$message = substr($row["m_details"]["message"], 0, 20);
+							?>
 							<a class="row mb_1 conversation" href="messaging?cm=<?=$row['c_details']['user_id']?>">
 								<div class="row_2 row_md">
 									<div class="row">
@@ -34,12 +36,46 @@ $this->view("template/notifications");
 									</div>
 								</div>
 								<div class="row_8 row_md" style="color: #3d413a !important;">
-									<h3><?=$row["c_details"]["name"]?></h3>
-									<?php if ($row["converser_id"] != $row["last_converser_id"]): ?>
+									<h3>
+										<?=$row["c_details"]["name"]?>
+										<?php if (strtotime($row["c_details"]["log_in_last"]) + 61 > strtotime(date("Y-m-d H:i:s"))): ?>
+											<span style="color: white; background-color: green; border-radius: 5rem; height: 100%; padding: 2px 10px;">ONLINE</span>
+										<?php endif; ?>
+									</h3>
+									<!-- MESSAGE -->
+									<?php if ($row["converser_id"] != $row["last_converser_id"] && $row["last_converser_id"] != NULL): ?>
 										YOU: 
 									<?php endif; ?>
-									<?=substr($row["m_details"]["message"], 0,20)?>
-									<i style="float: right;"><?=date("h:iA", strtotime($row["m_details"]["date_time"]))?></i>
+									<?php if ($row["status"] == 1 && $logged_in_id == $row["converser_2_id"]): ?>
+										<b>[ MESSAGE REQUEST ]</b>
+								 	<?php elseif ($row["status"] == 1 && $logged_in_id != $row["converser_2_id"]): ?>
+								 		<b>[ WAITING FOR REQUEST CONFIRMATION ]</b>
+									<?php else: ?>
+										<?php if (strlen($message) < 1): ?>
+											<b>[ Send a message! ]</b>
+										<?php else: ?>
+											<?=$message?>
+										<?php endif; ?>
+									<?php endif; ?>
+									<!-- TIMESTAMP -->
+									<?php if ($row["status"] == 2 && $message != NULL): ?>
+										<i style="float: right;">
+											<?php
+											$date_time = $row["m_details"]["date_time"];
+											$time = strtotime($date_time);
+											$time_now = strtotime(date("Y-m-d H:i:s"));
+											if ($time + 86400 > $time_now) {
+												echo date("h:i:sA", $time);
+											} elseif ($time + 604800 > $time_now) {
+												echo floor(($time_now - $time) / 86400) . "d ago";
+											} elseif ($time + 2592000 > $time_now) {
+												echo floor(($time_now - $time) / 604800) . "w aago";
+											} else {
+												echo floor(($time_now - $time) / 2592000) . "m a ago";
+											}
+											?>
+										</i>
+									<?php endif; ?>
 								</div>
 								
 								<div class="row_2 row_md pl_1 text_center">
@@ -51,12 +87,15 @@ $this->view("template/notifications");
 						<?php endforeach; ?>
 					<?php else: ?>
 						<div class="row pt_3 pb_3">
-							<span class="m_auto">Start a new conversation</span>
+							<b class="m_auto">
+								[ Start a new conversation! ]
+							</b>
 						</div>
 					<?php endif; ?>
 				</div>
 				<div class="row_1"></div>
 			</div>
+			<div class="row greek_pattern mt_1" style="height: 2rem;"></div>
 			<div class="row pt_1 pb_1">
 				<form action="messaging" method="GET" class="m_auto">
 					<div class="row pb_1">
@@ -67,20 +106,18 @@ $this->view("template/notifications");
 					<div class="row">
 						<div class="row_12 text_center">
 							<button class="button window_button">
-								<div>START A NEW CONVERSATION</div>
+								<div>REQUEST CONVERSATION</div>
 							</button>
 						</div>
 					</div>
 				</form>
 			</div>
-			<div class="row greek_pattern" style="height: 2rem;"></div>
 		</div>
 	</div>
 </body>
 <?php $this->view("windows/account_menu"); ?>
 <script type="text/javascript" src="<?=$this->cfg->base_url()?>assets/js/script.js"></script>
 <script type="text/javascript">
-
 	document.querySelector("#account_menu").onclick = function() {
 		document.querySelector("#win_account_menu").style.display = "block";
 	};

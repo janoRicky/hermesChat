@@ -1,6 +1,6 @@
 
 <div id="win_account_menu" class="window_container">
-	<div class="window win_md mb_3">
+	<div class="window win_md win_85_sm mb_3">
 		<?php
 		$user_id = (isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : "");
 		$user_name = (isset($_SESSION["user_name"]) ? $_SESSION["user_name"] : "");
@@ -52,19 +52,19 @@
 					<label class="window_label m_auto">Name:</label>
 				</div>
 				<div class="row">
-					<input class="textbox txt_md text_center m_auto" type="text" name="inp_name" value="<?=$user_name?>">
+					<input class="textbox txt_md text_center m_auto" type="text" name="inp_name" value="<?=$user_name?>" maxlength="64">
 				</div>
 				<div class="row">
 					<label class="window_label m_auto">Email:</label>
 				</div>
 				<div class="row">
-					<input class="textbox txt_md text_center m_auto" type="email" name="inp_email" value="<?=$user_email?>">
+					<input class="textbox txt_md text_center m_auto" type="email" name="inp_email" value="<?=$user_email?>" maxlength="64">
 				</div>
 				<div class="row">
 					<label class="window_label m_auto">Password:</label>
 				</div>
 				<div class="row">
-					<input class="textbox txt_md text_center m_auto" type="password" name="inp_password">
+					<input class="textbox txt_md text_center m_auto" type="password" name="inp_password" maxlength="64">
 				</div>
 				<div class="row pb_1 pt_1">
 					<button class="button window_button btn_account_update m_auto">
@@ -73,8 +73,5 @@
 				</div>
 			</form>
 		</div>
-		<!-- <div class="win_foot">
-			<input class="button btn_md" type="submit" value="Add">
-		</div> -->
 	</div>
 </div>

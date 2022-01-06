@@ -23,9 +23,9 @@ $this->view("template/notifications");
 					<div class="row_4 text_center row_md">
 						<form action="login_v" method="POST">
 							<label class="login_label">Email:</label><br>
-							<input class="textbox txt_md text_center mb_1" type="text" name="inp_email">
+							<input class="textbox txt_md text_center mb_1" type="text" name="inp_email" required>
 							<label class="login_label">Password:</label><br>
-							<input class="textbox txt_md text_center mb_1" type="password" name="inp_password">
+							<input class="textbox txt_md text_center mb_1" type="password" name="inp_password" required>
 
 							<button class="button mt_1">
 								<div>LOGIN</div>
