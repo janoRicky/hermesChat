@@ -67,11 +67,11 @@ $this->view("template/notifications");
 											if ($time + 86400 > $time_now) {
 												echo date("h:i:sA", $time);
 											} elseif ($time + 604800 > $time_now) {
-												echo floor(($time_now - $time) / 86400) . "d ago";
+												echo floor(($time_now - $time) / 86400) . " days ago";
 											} elseif ($time + 2592000 > $time_now) {
-												echo floor(($time_now - $time) / 604800) . "w aago";
+												echo floor(($time_now - $time) / 604800) . " weeks ago";
 											} else {
-												echo floor(($time_now - $time) / 2592000) . "m a ago";
+												echo floor(($time_now - $time) / 2592000) . " months ago";
 											}
 											?>
 										</i>
