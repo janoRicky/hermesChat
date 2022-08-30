@@ -12,3 +12,7 @@ This project also tries to imitate the functionalities of Bootstrap.
 
 
 THIS PROJECT WAS MADE AS AN INDIVIDUAL SCHOOL PROJECT
+![alt text](https://github.com/janoRicky/hermes_chat/blob/main/assets/hermes-4.jpg?raw=true)
+![alt text](https://github.com/janoRicky/hermes_chat/blob/main/assets/hermes-1.jpg?raw=true)
+![alt text](https://github.com/janoRicky/hermes_chat/blob/main/assets/hermes-2.jpg?raw=true)
+![alt text](https://github.com/janoRicky/hermes_chat/blob/main/assets/hermes-3.jpg?raw=true)
